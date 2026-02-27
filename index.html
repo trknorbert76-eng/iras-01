@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Az írás – folytatás</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; line-height: 1.35; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 20px; margin: 0 0 8px; }
+    p { margin: 8px 0 16px; color: #222; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .row { display: flex; align-items: center; gap: 10px; }
+    label { width: 90px; color: #333; }
+    input[type="text"]{
+      width: 70px; height: 44px; font-size: 18px; text-align: center;
+      border: 1px solid #aaa; border-radius: 10px;
+      letter-spacing: 1px;
+    }
+    .hint { font-size: 13px; color: #555; margin-top: 6px; }
+    .btns { margin-top: 18px; display: flex; gap: 12px; }
+    a.button {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: white;
+      font-weight: 700;
+      text-align: center;
+      min-width: 160px;
+    }
+    a#goRight { background: #1b7d2b; }
+    a#goLeft  { background: #6b2aa6; }
+    .status { margin-top: 12px; font-size: 14px; color: #333; }
+    .err { color: #b00020; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Folytatáshoz</h1>
+    <p>Írd be a 7 válaszod betűjét. Csak <b>A</b> vagy <b>B</b>. (Példa: AABBAAB)</p>
+
+    <div class="grid" id="inputs">
+      <div class="row"><label>1. válasz</label><input id="q1" type="text" inputmode="latin" maxlength="1" autocomplete="off" /></div>
+      <div class="row"><label>2. válasz</label><input id="q2" type="text" inputmode="latin" maxlength="1" autocomplete="off" /></div>
+      <div class="row"><label>3. válasz</label><input id="q3" type="text" inputmode="latin" maxlength="1" autocomplete="off" /></div>
+      <div class="row"><label>4. válasz</label><input id="q4" type="text" inputmode="latin" maxlength="1" autocomplete="off" /></div>
+      <div class="row"><label>5. válasz</label><input id="q5" type="text" inputmode="latin" maxlength="1" autocomplete="off" /></div>
+      <div class="row"><label>6. válasz</label><input id="q6" type="text" inputmode="latin" maxlength="1" autocomplete="off" /></div>
+      <div class="row"><label>7. válasz</label><input id="q7" type="text" inputmode="latin" maxlength="1" autocomplete="off" /></div>
+      <div class="hint">Tipp: nagybetű-kisbetű mindegy, a rendszer nagybetűsít.</div>
+    </div>
+
+    <div class="btns">
+      <!-- IDE ÍRD BE A 2 YOUTUBE LINKET -->
+      <a id="goRight" class="button" href="https://www.youtube.com/watch?v=JOBB_VIDEO_ID" target="_blank" rel="noopener">Tovább (jobb)</a>
+      <a id="goLeft"  class="button" href="https://www.youtube.com/watch?v=BAL_VIDEO_ID"  target="_blank" rel="noopener">Tovább (bal)</a>
+    </div>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    // ====== SÚLYOK BEÁLLÍTÁSA ======
+    // Itt adod meg, hogy az adott kérdésnél az A/B melyik irányba húz és mennyivel.
+    // Konvenció: balPont és jobbPont külön számolódik.
+    // Példák: ha 6A nagyon balra húz -> bal: 40
+    //         ha 6B nagyon jobbra húz -> jobb: 40
+
+    const weights = {
+      1: { A: {L: 20, R: 0},  B: {L: 0, R: 20} },
+      2: { A: {L: 30, R: 0},  B: {L: 0, R: 30} },
+      3: { A: {L: 15, R: 0},  B: {L: 0, R: 15} },
+      4: { A: {L: 20, R: 0},  B: {L: 0, R: 20} },
+      5: { A: {L: 10, R: 0},  B: {L: 0, R: 10} },
+      6: { A: {L: 40, R: 0},  B: {L: 0, R: 40} }, // döntetlen esetén is ez dönt
+      7: { A: {L: 20, R: 0},  B: {L: 0, R: 20} },
+    };
+
+    // Döntetlen-különbség küszöb: ha abs(L-R) <= threshold, akkor a 6. válasz dönt.
+    // Ha teljesen szigorúan csak pontos döntetlennél akarod: threshold = 0
+    const threshold = 0;
+
+    const ids = [1,2,3,4,5,6,7].map(n => `q${n}`);
+    const inputs = ids.map(id => document.getElementById(id));
+    const statusEl = document.getElementById('status');
+    const btnRight = document.getElementById('goRight');
+    const btnLeft  = document.getElementById('goLeft');
+
+    function sanitizeChar(ch) {
+      if (!ch) return "";
+      const c = ch.trim().toUpperCase();
+      return (c === "A" || c === "B") ? c : "";
+    }
+
+    function allFilledAndValid() {
+      return inputs.every(inp => sanitizeChar(inp.value).length === 1);
+    }
+
+    function computeResult() {
+      let L = 0, R = 0;
+
+      const answers = {};
+      for (let i = 1; i <= 7; i++) {
+        const v = sanitizeChar(document.getElementById(`q${i}`).value);
+        answers[i] = v;
+        const w = weights[i][v];
+        L += w.L; R += w.R;
+      }
+
+      // döntetlen vagy nagyon közel -> 6. kérdés dönt
+      const diff = Math.abs(L - R);
+      if (diff <= threshold) {
+        const v6 = answers[6];
+        return { side: (v6 === "A") ? "LEFT" : "RIGHT", L, R, tieBreak: true };
+      }
+
+      return { side: (L > R) ? "LEFT" : "RIGHT", L, R, tieBreak: false };
+    }
+
+    function hideButtons() {
+      btnRight.style.display = "none";
+      btnLeft.style.display = "none";
+    }
+
+    function showOnly(side) {
+      hideButtons();
+      if (side === "RIGHT") btnRight.style.display = "inline-block";
+      if (side === "LEFT")  btnLeft.style.display  = "inline-block";
+    }
+
+    function update() {
+      // javítjuk a beírt karaktert (ha pl. kisbetű)
+      inputs.forEach(inp => {
+        const s = sanitizeChar(inp.value);
+        if (inp.value !== s) inp.value = s;
+      });
+
+      hideButtons();
+
+      if (!allFilledAndValid()) {
+        statusEl.innerHTML = `<span class="err">Tölts ki mind a 7 mezőt (csak A vagy B).</span>`;
+        return;
+      }
+
+      const res = computeResult();
+      showOnly(res.side);
+
+      // Nem muszáj kiírni a pontokat (sőt, jobb, ha nem). Itt csak egy semleges visszajelzés:
+      statusEl.textContent = res.tieBreak ? "A mérleg kiegyenlített volt — a 6. válasz döntött." : "A mérleg eldőlt.";
+    }
+
+    // auto-ugrás a következő mezőre, hogy gyors legyen
+    inputs.forEach((inp, idx) => {
+      inp.addEventListener('input', () => {
+        inp.value = sanitizeChar(inp.value);
+        if (inp.value && idx < inputs.length - 1) inputs[idx + 1].focus();
+        update();
+      });
+      inp.addEventListener('keyup', (e) => {
+        if (e.key === "Backspace" && !inp.value && idx > 0) inputs[idx - 1].focus();
+      });
+    });
+
+    // kezdés
+    hideButtons();
+    statusEl.innerHTML = `<span class="err">Tölts ki mind a 7 mezőt (csak A vagy B).</span>`;
+    inputs[0].focus();
+  </script>
+</body>
+</html>
