@@ -431,13 +431,20 @@
     statusEl.textContent = "";
 
     const res = scoreSide();
-    if(res.side === "RIGHT"){
-      btnRight.style.display = "inline-block";
-      btnRight.focus({ preventScroll: true });
-    }else{
-      btnLeft.style.display = "inline-block";
-      btnLeft.focus({ preventScroll: true });
-    }
+    function focusBtn(btn){
+  // gomb megjelenítése
+  btn.style.display = "inline-block";
+  // várunk 1 render ciklust, hogy mobilon is biztosan fókuszáljon
+  requestAnimationFrame(() => {
+    btn.focus({ preventScroll: true });
+  });
+}
+
+if(res.side === "RIGHT"){
+  focusBtn(btnRight);
+}else{
+  focusBtn(btnLeft);
+}
   }
 
   // Input gépelés: nincs auto-ugrás
@@ -464,4 +471,5 @@
 </script>
 </body>
 </html>
+
 
