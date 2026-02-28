@@ -432,12 +432,16 @@
 
     const res = scoreSide();
     function focusBtn(btn){
-  // gomb megjelenítése
   btn.style.display = "inline-block";
-  // várunk 1 render ciklust, hogy mobilon is biztosan fókuszáljon
   requestAnimationFrame(() => {
     btn.focus({ preventScroll: true });
   });
+}
+
+if(res.side === "RIGHT"){
+  focusBtn(btnRight);
+}else{
+  focusBtn(btnLeft);
 }
 
 if(res.side === "RIGHT"){
@@ -471,5 +475,6 @@ if(res.side === "RIGHT"){
 </script>
 </body>
 </html>
+
 
 
