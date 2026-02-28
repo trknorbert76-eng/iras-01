@@ -430,18 +430,22 @@
 
     statusEl.textContent = "";
 
-    const res = scoreSide();
-    function focusBtn(btn){
+   const res = scoreSide();
+
+function revealAndGo(btn){
   btn.style.display = "inline-block";
-  requestAnimationFrame(() => {
-    btn.focus({ preventScroll: true });
-  });
+
+  // Görgessen oda szépen
+  btn.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  // Kis késleltetés, majd fókusz (itt már NEM preventScroll)
+  setTimeout(() => btn.focus(), 150);
 }
 
 if(res.side === "RIGHT"){
-  focusBtn(btnRight);
+  revealAndGo(btnRight);
 }else{
-  focusBtn(btnLeft);
+  revealAndGo(btnLeft);
 }
 
 if(res.side === "RIGHT"){
@@ -475,6 +479,7 @@ if(res.side === "RIGHT"){
 </script>
 </body>
 </html>
+
 
 
 
