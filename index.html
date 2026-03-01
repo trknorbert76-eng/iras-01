@@ -341,15 +341,21 @@
     // 6: csak döntetlennél dönt (nem pontoz)
     //
     // BAL (LEFT) válaszok: 1=B, 2=A, 3=B, 4=A, 5=B, 6=B (csak tie), 7=A
+const weights = {
+  // BAL válaszok: 1=B, 2=A, 3=B, 4=A, 5=B, 7=A
+  // 1/4/7 erősebb (2 pont), a többi 1 pont
+  1: { A:{L:0,R:2}, B:{L:2,R:0} }, // erős
+  2: { A:{L:1,R:0}, B:{L:0,R:1} },
+  3: { A:{L:0,R:1}, B:{L:1,R:0} },
+  4: { A:{L:2,R:0}, B:{L:0,R:2} }, // erős
+  5: { A:{L:0,R:1}, B:{L:1,R:0} },
 
-    const leftAnswer = {
-      1: "B",
-      2: "A",
-      3: "B",
-      4: "A",
-      5: "B",
-      7: "A"
-    };
+  // 6: csak döntetlennél dönt (nem pontoz)
+  6: { A:{L:0,R:0}, B:{L:0,R:0} },
+
+  7: { A:{L:2,R:0}, B:{L:0,R:2} }, // erős
+};
+  
 
     const inputs = Array.from({length:7}, (_,i)=>document.getElementById(`q${i+1}`));
     const statusEl = document.getElementById("status");
@@ -371,28 +377,24 @@
       return inputs.every(inp => sanitizeChar(inp.value) !== "");
     }
 
-    function scoreSide(){
-      let L = 0, R = 0;
-      const answers = {};
+function scoreSide(){
+  let L = 0, R = 0;
+  const answers = {};
 
-      for(let i=1;i<=7;i++){
-        const v = sanitizeChar(document.getElementById(`q${i}`).value);
-        answers[i] = v;
-      }
+  for(let i=1;i<=7;i++){
+    const v = sanitizeChar(document.getElementById(`q${i}`).value);
+    answers[i] = v;
+    const w = weights[i][v];
+    L += w.L;
+    R += w.R;
+  }
 
-      // pontozás 1..5,7
-      [1,2,3,4,5,7].forEach(i=>{
-        if(answers[i] === leftAnswer[i]) L += 1;
-        else R += 1;
-      });
+  if(L > R) return { side: "LEFT" };
+  if(R > L) return { side: "RIGHT" };
 
-      // döntés
-      if(L > R) return { side: "LEFT" };
-      if(R > L) return { side: "RIGHT" };
-
-      // döntetlen: 6-os dönt (B -> LEFT)
-      return { side: (answers[6] === "B") ? "LEFT" : "RIGHT" };
-    }
+  // döntetlen: 6-os dönt (B -> LEFT)
+  return { side: (answers[6] === "B") ? "LEFT" : "RIGHT" };
+}
 
     function revealAndGo(btn){
       btn.style.display = "inline-block";
@@ -443,3 +445,4 @@
   </script>
 </body>
 </html>
+
