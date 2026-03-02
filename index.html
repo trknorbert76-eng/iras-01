@@ -441,7 +441,18 @@ function scoreSide(){
     });
 
     hideButtons();
+    
     statusEl.textContent = "";
+    // ====== Tovább gombok: zene STOP + átirányítás ======
+function goWithStop(e){
+  e.preventDefault();
+  stopMusic();
+  const url = e.currentTarget.href;
+  window.location.href = url;
+}
+
+btnRight.addEventListener("click", goWithStop);
+btnLeft.addEventListener("click", goWithStop);
   </script>
   <audio id="bgMusic" loop>
   <source src="music.mp3" type="audio/mpeg">
@@ -478,6 +489,7 @@ function scoreSide(){
 </script>
 </body>
 </html>
+
 
 
 
