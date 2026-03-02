@@ -457,18 +457,20 @@ function scoreSide(){
     music.volume = 0;
     music.play().catch(()=>{});
 
-    // finom beúszás
     let v = 0;
     const fade = setInterval(() => {
-      if (v >= 0.10) {
-        clearInterval(fade);
-      } else {
-        v += 0.01;
-        music.volume = v;
-      }
+      if (v >= 0.10) clearInterval(fade);
+      else { v += 0.01; music.volume = v; }
     }, 120);
 
     started = true;
+  }
+
+  function stopMusic(){
+    try{
+      music.pause();
+      music.currentTime = 0;
+    }catch(e){}
   }
 
   window.addEventListener("click", startMusic, { once: true });
@@ -476,6 +478,7 @@ function scoreSide(){
 </script>
 </body>
 </html>
+
 
 
 
