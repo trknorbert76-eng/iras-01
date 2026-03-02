@@ -443,8 +443,40 @@ function scoreSide(){
     hideButtons();
     statusEl.textContent = "";
   </script>
+  <audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  const music = document.getElementById("bgMusic");
+  let started = false;
+
+  function startMusic() {
+    if (started) return;
+
+    music.volume = 0;
+    music.play().catch(()=>{});
+
+    // finom beúszás
+    let v = 0;
+    const fade = setInterval(() => {
+      if (v >= 0.10) {
+        clearInterval(fade);
+      } else {
+        v += 0.01;
+        music.volume = v;
+      }
+    }, 120);
+
+    started = true;
+  }
+
+  window.addEventListener("click", startMusic, { once: true });
+  window.addEventListener("touchstart", startMusic, { once: true });
+</script>
 </body>
 </html>
+
 
 
 
