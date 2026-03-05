@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TN:Az írás </title>
+  <title>TN:Az írás</title>
   <style>
     :root{
       --bg:#ffffff;
@@ -202,7 +202,7 @@
       <div class="card">
         <div class="qtitle">7 kérdés – válaszolj A vagy B betűvel</div>
 
-        <!-- 1: BAL = B -->
+        <!-- 1 -->
         <div class="q" data-q="1">
           <div class="qnum">1.</div>
           <p class="qtext">Ha lehet:</p>
@@ -216,7 +216,7 @@
           </div>
         </div>
 
-        <!-- 2: BAL = A (FORDÍTVA) -->
+        <!-- 2 -->
         <div class="q" data-q="2">
           <div class="qnum">2.</div>
           <p class="qtext">Ha félreértenek:</p>
@@ -230,7 +230,7 @@
           </div>
         </div>
 
-        <!-- 3: BAL = B -->
+        <!-- 3 -->
         <div class="q" data-q="3">
           <div class="qnum">3.</div>
           <p class="qtext">Ha rám hárul a felelősség:</p>
@@ -244,7 +244,7 @@
           </div>
         </div>
 
-        <!-- 4: BAL = A (FORDÍTVA) -->
+        <!-- 4 -->
         <div class="q" data-q="4">
           <div class="qnum">4.</div>
           <p class="qtext">Mi az első?</p>
@@ -258,7 +258,7 @@
           </div>
         </div>
 
-        <!-- 5: BAL = B (marad így, jó nem egyértelmű) -->
+        <!-- 5 -->
         <div class="q" data-q="5">
           <div class="qnum">5.</div>
           <p class="qtext">Ha lehet:</p>
@@ -272,7 +272,7 @@
           </div>
         </div>
 
-        <!-- 6: TIEBREAK ONLY (semleges) -->
+        <!-- 6 -->
         <div class="q" data-q="6">
           <div class="qnum">6.</div>
           <p class="qtext">Mi számít leginkább?</p>
@@ -286,7 +286,7 @@
           </div>
         </div>
 
-        <!-- 7: BAL = A (FORDÍTVA) -->
+        <!-- 7 -->
         <div class="q" data-q="7">
           <div class="qnum">7.</div>
           <p class="qtext">A fájdalomról:</p>
@@ -319,7 +319,6 @@
         <div class="hint">Tipp: nagybetű-kisbetű mindegy, a rendszer nagybetűsíti.</div>
 
         <div class="btns">
-          <!-- IDE ÍRD BE A 2 LINKET -->
           <a id="goRight" class="button" href="https://trknorbert76-eng.github.io/befejezes01/" target="_blank" rel="noopener">Tovább</a>
           <a id="goLeft"  class="button" href="https://trknorbert76-eng.github.io/befejezes02/"  target="_blank" rel="noopener">Tovább</a>
         </div>
@@ -337,25 +336,15 @@
 
   <script>
     // ====== LOGIKA ======
-    // 1..5,7 pontoz: 1 pont a választott oldalnak
-    // 6: csak döntetlennél dönt (nem pontoz)
-    //
-    // BAL (LEFT) válaszok: 1=B, 2=A, 3=B, 4=A, 5=B, 6=B (csak tie), 7=A
-const weights = {
-  // BAL válaszok: 1=B, 2=A, 3=B, 4=A, 5=B, 7=A
-  // 1/4/7 erősebb (2 pont), a többi 1 pont
-  1: { A:{L:0,R:2}, B:{L:2,R:0} }, // erős
-  2: { A:{L:1,R:0}, B:{L:0,R:1} },
-  3: { A:{L:0,R:1}, B:{L:1,R:0} },
-  4: { A:{L:2,R:0}, B:{L:0,R:2} }, // erős
-  5: { A:{L:0,R:1}, B:{L:1,R:0} },
-
-  // 6: csak döntetlennél dönt (nem pontoz)
-  6: { A:{L:0,R:0}, B:{L:0,R:0} },
-
-  7: { A:{L:2,R:0}, B:{L:0,R:2} }, // erős
-};
-  
+    const weights = {
+      1: { A:{L:0,R:2}, B:{L:2,R:0} }, // erős
+      2: { A:{L:1,R:0}, B:{L:0,R:1} },
+      3: { A:{L:0,R:1}, B:{L:1,R:0} },
+      4: { A:{L:2,R:0}, B:{L:0,R:2} }, // erős
+      5: { A:{L:0,R:1}, B:{L:1,R:0} },
+      6: { A:{L:0,R:0}, B:{L:0,R:0} }, // tiebreak only
+      7: { A:{L:2,R:0}, B:{L:0,R:2} }, // erős
+    };
 
     const inputs = Array.from({length:7}, (_,i)=>document.getElementById(`q${i+1}`));
     const statusEl = document.getElementById("status");
@@ -377,24 +366,24 @@ const weights = {
       return inputs.every(inp => sanitizeChar(inp.value) !== "");
     }
 
-function scoreSide(){
-  let L = 0, R = 0;
-  const answers = {};
+    function scoreSide(){
+      let L = 0, R = 0;
+      const answers = {};
 
-  for(let i=1;i<=7;i++){
-    const v = sanitizeChar(document.getElementById(`q${i}`).value);
-    answers[i] = v;
-    const w = weights[i][v];
-    L += w.L;
-    R += w.R;
-  }
+      for(let i=1;i<=7;i++){
+        const v = sanitizeChar(document.getElementById(`q${i}`).value);
+        answers[i] = v;
+        const w = weights[i][v];
+        L += w.L;
+        R += w.R;
+      }
 
-  if(L > R) return { side: "LEFT" };
-  if(R > L) return { side: "RIGHT" };
+      if(L > R) return { side: "LEFT" };
+      if(R > L) return { side: "RIGHT" };
 
-  // döntetlen: 6-os dönt (B -> LEFT)
-  return { side: (answers[6] === "B") ? "LEFT" : "RIGHT" };
-}
+      // döntetlen: 6-os dönt (B -> LEFT)
+      return { side: (answers[6] === "B") ? "LEFT" : "RIGHT" };
+    }
 
     function revealAndGo(btn){
       btn.style.display = "inline-block";
@@ -407,61 +396,7 @@ function scoreSide(){
         const s = sanitizeChar(inp.value);
         if(inp.value !== s) inp.value = s;
       });
-// ===== VÉLETLEN VÁLASZ-SZÖVEGEK: CSAK BETÖLTÉSKOR, 1× =====
-const answerVariants = {
-  1: [
-    { A:"Elkerülöm a veszteséget.", B:"Van veszteség, amit vállalni kell." },
-    { A:"Ha lehet, kikerülöm.", B:"A veszteséget néha vállalni kell." },
-    { A:"Megúsznám, ha lehet.", B:"Néha bele kell állni." },
-  ],
-  2: [
-    { A:"Ha az igazság kemény, kimondom.", B:"Inkább békét keresek, még ha félreértenek is." },
-    { A:"Nem finomítok a lényegről.", B:"Nem minden harcot kell megvívni." },
-    { A:"Amit igaznak látok, kimondom.", B:"A béke néha többet ér." },
-  ],
-  3: [
-    { A:"Nem szeretem, ha rám hárul.", B:"Néha akkor is vállalni kell, ha mások nem értik." },
-    { A:"Inkább átadom másnak.", B:"A teher néha az én dolgom." },
-    { A:"Kihátrálok, ha lehet.", B:"Megfogom, akkor is, ha nehéz." },
-  ],
-  4: [
-    { A:"Az igazság az első.", B:"A túlélés az első." },
-    { A:"A tisztaság fontosabb.", B:"A megmaradás fontosabb." },
-    { A:"Igaz maradni fontos.", B:"Életben maradni fontos." },
-  ],
-  5: [
-    { A:"Csendben maradok.", B:"Ha kell, megszólalok." },
-    { A:"Lenyelem.", B:"Kimondom." },
-    { A:"Nem szólok.", B:"Szólok, ha muszáj." },
-  ],
-  6: [
-    { A:"A következmények.", B:"A döntés tisztasága." },
-    { A:"A vége számít.", B:"A szándék számít." },
-    { A:"Mit okozok vele?", B:"Mit választok valójában?" },
-  ],
-  7: [
-    { A:"A fájdalomnak is lehet beteljesítő szerepe.", B:"A fájdalomnak nincs értelme." },
-    { A:"A fájdalom néha formál.", B:"A fájdalom csak rombol." },
-    { A:"Lehet értelme annak is, ami fáj.", B:"A fájdalom értelmetlen teher." },
-  ],
-};
 
-function applyRandomAnswerTextsOnce(){
-  for(let q = 1; q <= 7; q++){
-    const list = answerVariants[q];
-    if(!list || !list.length) continue;
-
-    const pick = list[Math.floor(Math.random() * list.length)];
-
-    const a = document.querySelector(`.choice[data-q="${q}"][data-v="A"] .label`);
-    const b = document.querySelector(`.choice[data-q="${q}"][data-v="B"] .label`);
-    if(a) a.textContent = pick.A;
-    if(b) b.textContent = pick.B;
-  }
-}
-
-// CSAK EGYSZER! (nem update-ben, nem kattintásban)
-applyRandomAnswerTextsOnce();
       hideButtons();
 
       if(!allFilledAndValid()){
@@ -475,6 +410,61 @@ applyRandomAnswerTextsOnce();
       if(res.side === "RIGHT") revealAndGo(btnRight);
       else revealAndGo(btnLeft);
     }
+
+    // ===== VÉLETLEN VÁLASZ-SZÖVEGEK: CSAK OLDALBETÖLTÉSKOR =====
+    const answerVariants = {
+      1: [
+        { A:"Elkerülöm a veszteséget.", B:"Van veszteség, amit vállalni kell." },
+        { A:"Ha lehet, kikerülöm.", B:"A veszteséget néha vállalni kell." },
+        { A:"Megúsznám, ha lehet.", B:"Néha bele kell állni." },
+      ],
+      2: [
+        { A:"Ha az igazság kemény, kimondom.", B:"Inkább békét keresek, még ha félreértenek is." },
+        { A:"Nem finomítok a lényegről.", B:"Nem minden harcot kell megvívni." },
+        { A:"Amit igaznak látok, kimondom.", B:"A béke néha többet ér." },
+      ],
+      3: [
+        { A:"Nem szeretem, ha rám hárul.", B:"Néha akkor is vállalni kell, ha mások nem értik." },
+        { A:"Inkább átadom másnak.", B:"A teher néha az én dolgom." },
+        { A:"Kihátrálok, ha lehet.", B:"Megfogom, akkor is, ha nehéz." },
+      ],
+      4: [
+        { A:"Az igazság az első.", B:"A túlélés az első." },
+        { A:"A tisztaság fontosabb.", B:"A megmaradás fontosabb." },
+        { A:"Igaz maradni fontos.", B:"Életben maradni fontos." },
+      ],
+      5: [
+        { A:"Csendben maradok.", B:"Ha kell, megszólalok." },
+        { A:"Lenyelem.", B:"Kimondom." },
+        { A:"Nem szólok.", B:"Szólok, ha muszáj." },
+      ],
+      6: [
+        { A:"A következmények.", B:"A döntés tisztasága." },
+        { A:"A vége számít.", B:"A szándék számít." },
+        { A:"Mit okozok vele?", B:"Mit választok valójában?" },
+      ],
+      7: [
+        { A:"A fájdalomnak is lehet beteljesítő szerepe.", B:"A fájdalomnak nincs értelme." },
+        { A:"A fájdalom néha formál.", B:"A fájdalom csak rombol." },
+        { A:"Lehet értelme annak is, ami fáj.", B:"A fájdalom értelmetlen teher." },
+      ],
+    };
+
+    function applyRandomAnswerTextsOnce(){
+      for(let q = 1; q <= 7; q++){
+        const list = answerVariants[q];
+        if(!list || !list.length) continue;
+
+        const pick = list[Math.floor(Math.random() * list.length)];
+
+        const a = document.querySelector(`.choice[data-q="${q}"][data-v="A"] .label`);
+        const b = document.querySelector(`.choice[data-q="${q}"][data-v="B"] .label`);
+        if(a) a.textContent = pick.A;
+        if(b) b.textContent = pick.B;
+      }
+    }
+
+    applyRandomAnswerTextsOnce();
 
     // Gépelés
     inputs.forEach((inp) => {
@@ -495,59 +485,52 @@ applyRandomAnswerTextsOnce();
     });
 
     hideButtons();
-    
     statusEl.textContent = "";
+
     // ====== Tovább gombok: zene STOP + átirányítás ======
-function goWithStop(e){
-  e.preventDefault();
-  stopMusic();
-  const url = e.currentTarget.href;
-  window.location.href = url;
-}
+    function goWithStop(e){
+      e.preventDefault();
+      stopMusic();
+      const url = e.currentTarget.href;
+      window.location.href = url;
+    }
 
-btnRight.addEventListener("click", goWithStop);
-btnLeft.addEventListener("click", goWithStop);
+    btnRight.addEventListener("click", goWithStop);
+    btnLeft.addEventListener("click", goWithStop);
   </script>
+
   <audio id="bgMusic" loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 
-<script>
-  const music = document.getElementById("bgMusic");
-  let started = false;
+  <script>
+    const music = document.getElementById("bgMusic");
+    let started = false;
 
-  function startMusic() {
-    if (started) return;
+    function startMusic() {
+      if (started) return;
 
-    music.volume = 0;
-    music.play().catch(()=>{});
+      music.volume = 0;
+      music.play().catch(()=>{});
 
-    let v = 0;
-    const fade = setInterval(() => {
-      if (v >= 0.10) clearInterval(fade);
-      else { v += 0.01; music.volume = v; }
-    }, 120);
+      let v = 0;
+      const fade = setInterval(() => {
+        if (v >= 0.10) clearInterval(fade);
+        else { v += 0.01; music.volume = v; }
+      }, 120);
 
-    started = true;
-  }
+      started = true;
+    }
 
-  function stopMusic(){
-    try{
-      music.pause();
-      music.currentTime = 0;
-    }catch(e){}
-  }
+    function stopMusic(){
+      try{
+        music.pause();
+        music.currentTime = 0;
+      }catch(e){}
+    }
 
-  window.addEventListener("click", startMusic, { once: true });
-  window.addEventListener("touchstart", startMusic, { once: true });
-</script>
+    window.addEventListener("click", startMusic, { once: true });
+    window.addEventListener("touchstart", startMusic, { once: true });
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
