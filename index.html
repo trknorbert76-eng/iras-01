@@ -407,7 +407,32 @@ function scoreSide(){
         const s = sanitizeChar(inp.value);
         if(inp.value !== s) inp.value = s;
       });
+// ===== VÉLETLEN VÁLASZ SZÖVEGEK =====
+const answerVariants = {
+  1: [
+    {A:"Elkerülöm a veszteséget.",B:"Van veszteség, amit vállalni kell."},
+    {A:"Ha lehet, kikerülöm.",B:"A veszteséget néha vállalni kell."}
+  ],
+  2: [
+    {A:"Ha az igazság kemény, kimondom.",B:"Inkább békét keresek."},
+    {A:"Nem finomítok az igazságon.",B:"A béke néha fontosabb."}
+  ]
+};
 
+function applyRandomAnswerTexts(){
+  for(let q in answerVariants){
+    const list = answerVariants[q];
+    const pick = list[Math.floor(Math.random()*list.length)];
+
+    const a = document.querySelector(`.choice[data-q="${q}"][data-v="A"] .label`);
+    const b = document.querySelector(`.choice[data-q="${q}"][data-v="B"] .label`);
+
+    if(a) a.textContent = pick.A;
+    if(b) b.textContent = pick.B;
+  }
+}
+
+applyRandomAnswerTexts();
       hideButtons();
 
       if(!allFilledAndValid()){
@@ -489,6 +514,7 @@ btnLeft.addEventListener("click", goWithStop);
 </script>
 </body>
 </html>
+
 
 
 
