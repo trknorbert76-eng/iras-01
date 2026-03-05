@@ -407,32 +407,61 @@ function scoreSide(){
         const s = sanitizeChar(inp.value);
         if(inp.value !== s) inp.value = s;
       });
-// ===== VÉLETLEN VÁLASZ SZÖVEGEK =====
+// ===== VÉLETLEN VÁLASZ-SZÖVEGEK: CSAK BETÖLTÉSKOR, 1× =====
 const answerVariants = {
   1: [
-    {A:"Elkerülöm a veszteséget.",B:"Van veszteség, amit vállalni kell."},
-    {A:"Ha lehet, kikerülöm.",B:"A veszteséget néha vállalni kell."}
+    { A:"Elkerülöm a veszteséget.", B:"Van veszteség, amit vállalni kell." },
+    { A:"Ha lehet, kikerülöm.", B:"A veszteséget néha vállalni kell." },
+    { A:"Megúsznám, ha lehet.", B:"Néha bele kell állni." },
   ],
   2: [
-    {A:"Ha az igazság kemény, kimondom.",B:"Inkább békét keresek."},
-    {A:"Nem finomítok az igazságon.",B:"A béke néha fontosabb."}
-  ]
+    { A:"Ha az igazság kemény, kimondom.", B:"Inkább békét keresek, még ha félreértenek is." },
+    { A:"Nem finomítok a lényegről.", B:"Nem minden harcot kell megvívni." },
+    { A:"Amit igaznak látok, kimondom.", B:"A béke néha többet ér." },
+  ],
+  3: [
+    { A:"Nem szeretem, ha rám hárul.", B:"Néha akkor is vállalni kell, ha mások nem értik." },
+    { A:"Inkább átadom másnak.", B:"A teher néha az én dolgom." },
+    { A:"Kihátrálok, ha lehet.", B:"Megfogom, akkor is, ha nehéz." },
+  ],
+  4: [
+    { A:"Az igazság az első.", B:"A túlélés az első." },
+    { A:"A tisztaság fontosabb.", B:"A megmaradás fontosabb." },
+    { A:"Igaz maradni fontos.", B:"Életben maradni fontos." },
+  ],
+  5: [
+    { A:"Csendben maradok.", B:"Ha kell, megszólalok." },
+    { A:"Lenyelem.", B:"Kimondom." },
+    { A:"Nem szólok.", B:"Szólok, ha muszáj." },
+  ],
+  6: [
+    { A:"A következmények.", B:"A döntés tisztasága." },
+    { A:"A vége számít.", B:"A szándék számít." },
+    { A:"Mit okozok vele?", B:"Mit választok valójában?" },
+  ],
+  7: [
+    { A:"A fájdalomnak is lehet beteljesítő szerepe.", B:"A fájdalomnak nincs értelme." },
+    { A:"A fájdalom néha formál.", B:"A fájdalom csak rombol." },
+    { A:"Lehet értelme annak is, ami fáj.", B:"A fájdalom értelmetlen teher." },
+  ],
 };
 
-function applyRandomAnswerTexts(){
-  for(let q in answerVariants){
+function applyRandomAnswerTextsOnce(){
+  for(let q = 1; q <= 7; q++){
     const list = answerVariants[q];
-    const pick = list[Math.floor(Math.random()*list.length)];
+    if(!list || !list.length) continue;
+
+    const pick = list[Math.floor(Math.random() * list.length)];
 
     const a = document.querySelector(`.choice[data-q="${q}"][data-v="A"] .label`);
     const b = document.querySelector(`.choice[data-q="${q}"][data-v="B"] .label`);
-
     if(a) a.textContent = pick.A;
     if(b) b.textContent = pick.B;
   }
 }
 
-applyRandomAnswerTexts();
+// CSAK EGYSZER! (nem update-ben, nem kattintásban)
+applyRandomAnswerTextsOnce();
       hideButtons();
 
       if(!allFilledAndValid()){
@@ -514,6 +543,7 @@ btnLeft.addEventListener("click", goWithStop);
 </script>
 </body>
 </html>
+
 
 
 
