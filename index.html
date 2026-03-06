@@ -413,42 +413,57 @@
 
     // ===== VÉLETLEN VÁLASZ-SZÖVEGEK: CSAK OLDALBETÖLTÉSKOR =====
     const answerVariants = {
-      1: [
-        { A:"Elkerülöm a veszteséget.", B:"Van veszteség, amit vállalni kell." },
-        { A:"Ha lehet, kikerülöm.", B:"A veszteséget néha vállalni kell." },
-        { A:"Megúsznám, ha lehet.", B:"Néha bele kell állni." },
-      ],
-      2: [
-        { A:"Ha az igazság kemény, kimondom.", B:"Inkább békét keresek, még ha félreértenek is." },
-        { A:"Nem finomítok a lényegről.", B:"Nem minden harcot kell megvívni." },
-        { A:"Amit igaznak látok, kimondom.", B:"A béke néha többet ér." },
-      ],
-      3: [
-        { A:"Nem szeretem, ha rám hárul.", B:"Néha akkor is vállalni kell, ha mások nem értik." },
-        { A:"Inkább átadom másnak.", B:"A teher néha az én dolgom." },
-        { A:"Kihátrálok, ha lehet.", B:"Megfogom, akkor is, ha nehéz." },
-      ],
-      4: [
-        { A:"Az igazság az első.", B:"A túlélés az első." },
-        { A:"A tisztaság fontosabb.", B:"A megmaradás fontosabb." },
-        { A:"Igaz maradni fontos.", B:"Életben maradni fontos." },
-      ],
-      5: [
-        { A:"Csendben maradok.", B:"Ha kell, megszólalok." },
-        { A:"Lenyelem.", B:"Kimondom." },
-        { A:"Nem szólok.", B:"Szólok, ha muszáj." },
-      ],
-      6: [
-        { A:"A következmények.", B:"A döntés tisztasága." },
-        { A:"A vége számít.", B:"A szándék számít." },
-        { A:"Mit okozok vele?", B:"Mit választok valójában?" },
-      ],
-      7: [
-        { A:"A fájdalomnak is lehet beteljesítő szerepe.", B:"A fájdalomnak nincs értelme." },
-        { A:"A fájdalom néha formál.", B:"A fájdalom csak rombol." },
-        { A:"Lehet értelme annak is, ami fáj.", B:"A fájdalom értelmetlen teher." },
-      ],
-    };
+
+  1: [
+    { A:"Inkább azt nézem, hogyan tudok továbblépni.", B:"Először meg akarom érteni, mi történt pontosan." },
+    { A:"Nem mindig keresem az igazságot, inkább a kiutat.", B:"Fontos nekem, hogy kiderüljön az igazság." },
+    { A:"Azt figyelem, mi segít most a legtöbbet.", B:"Inkább tisztázni akarom a helyzetet, mielőtt reagálok." },
+    { A:"Inkább a megoldást keresem, mint a magyarázatot.", B:"Először rendet teszek fejben: mi volt igaz és mi nem." }
+  ],
+
+  2: [
+    { A:"Meg akarom érteni, miért történik velem.", B:"Inkább túl akarok jutni rajta, és menni tovább." },
+    { A:"Keresem az okát, még ha nehéz is szembenézni vele.", B:"Nem keresek mindig magyarázatot, csak elengedem." },
+    { A:"A fájdalomban is próbálom meglátni az értelmét.", B:"Azt nézem, hogyan lehet minél hamarabb mögöttem." },
+    { A:"Addig gondolkodom rajta, amíg valami tanulságot nem találok benne.", B:"Nem akarom elemezni, inkább lezárom magamban." }
+  ],
+
+  3: [
+    { A:"Inkább elengedem, hogy ne maradjon bennem.", B:"Nem felejtem el könnyen, mert tanulni akarok belőle." },
+    { A:"Nem akarom sokáig cipelni magamban.", B:"Sokáig gondolkodom rajta, mi történt valójában." },
+    { A:"Jobbnak érzem lezárni és továbblépni.", B:"Inkább megérteni próbálom, mint gyorsan elfelejteni." },
+    { A:"Nem ragadok bele, inkább hagyom elmúlni.", B:"Az ilyen dolgokat nehezen engedem el." }
+  ],
+
+  4: [
+    { A:"Megállok, és végiggondolom, hol csúszott el.", B:"Kijavítom, és megyek tovább." },
+    { A:"Fontos, hogy megértsem, miért történt.", B:"Nem időzöm rajta túl sokáig." },
+    { A:"Inkább tanulni próbálok belőle.", B:"Inkább lezárom, és a következő lépésre figyelek." },
+    { A:"Meg akarom látni benne a tanulságot.", B:"Rendezem, ami lehet, aztán továbblépek." }
+  ],
+
+  5: [
+    { A:"Segítek, de közben figyelek a saját határaimra is.", B:"Nehéz távol maradnom, mélyen megérint." },
+    { A:"Támogatom, de nem akarok teljesen belemerülni.", B:"Könnyen bevonódom érzelmileg." },
+    { A:"Fontos segíteni, de nem minden terhet tudok átvenni.", B:"Ha valaki szenved, azt én is erősen érzem." },
+    { A:"Próbálok jelen lenni, de megőrizni magam.", B:"Szinte magammal viszem a fájdalmát." }
+  ],
+
+  6: [
+    { A:"Addig nem állítok semmit biztosra.", B:"El tudom fogadni, hogy nem minden bizonyítható." },
+    { A:"Fontos számomra, hogy legyen bizonyíték.", B:"Vannak dolgok, amiket nem lehet mérni." },
+    { A:"Inkább kivárok, amíg tisztábban látok.", B:"Néha elég az, amit belül érzek igaznak." },
+    { A:"Nem szeretek feltételezésekre építeni.", B:"Nem minden igazság fér bele bizonyítékokba." }
+  ],
+
+  7: [
+    { A:"Azt szeretném, hogy legyen értelme annak, ami történt.", B:"Azt szeretném, hogy békében le tudjam zárni." },
+    { A:"Jó lenne látni az életem egészének jelentését.", B:"Inkább a nyugalom fontos számomra." },
+    { A:"Fontos lenne, hogy összeálljon a kép.", B:"Azt kívánnám, hogy csendben el tudjam engedni." },
+    { A:"Azt remélem, hogy minden valamiért történt.", B:"Jó lenne megbékélve lezárni mindent." }
+  ]
+
+};
 
     function applyRandomAnswerTextsOnce(){
       for(let q = 1; q <= 7; q++){
@@ -534,3 +549,4 @@
   </script>
 </body>
 </html>
+
