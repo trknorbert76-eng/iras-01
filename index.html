@@ -335,6 +335,24 @@
   </div>
 
   <script>
+    const SUPABASE_URL = "https://hhysuxfwdjwlxtmlxnrv.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_4Btoi0wsypr48xQH31RMaQ_r1YrPpsv";
+
+    async function track(event){
+      try{
+        await fetch(SUPABASE_URL + "/rest/v1/jesus_stats", {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "apikey":SUPABASE_KEY,
+            "Authorization":"Bearer " + SUPABASE_KEY,
+            "Prefer":"return=minimal"
+          },
+          body: JSON.stringify({ event })
+        });
+      }catch(e){}
+    }
+
     // ====== LOGIKA ======
     const weights = {
       1: { A:{L:0,R:2}, B:{L:2,R:0} }, // erős
@@ -350,6 +368,7 @@
     const statusEl = document.getElementById("status");
     const btnRight = document.getElementById("goRight");
     const btnLeft  = document.getElementById("goLeft");
+    let lastTrackedResult = null;
 
     function sanitizeChar(v){
       if(!v) return "";
@@ -401,14 +420,26 @@
 
       if(!allFilledAndValid()){
         statusEl.textContent = "";
+        lastTrackedResult = null;
         return;
       }
 
       statusEl.textContent = "";
 
       const res = scoreSide();
-      if(res.side === "RIGHT") revealAndGo(btnRight);
-      else revealAndGo(btnLeft);
+      if(res.side === "RIGHT"){
+        if(lastTrackedResult !== "RIGHT"){
+          track("result_right");
+          lastTrackedResult = "RIGHT";
+        }
+        revealAndGo(btnRight);
+      }else{
+        if(lastTrackedResult !== "LEFT"){
+          track("result_left");
+          lastTrackedResult = "LEFT";
+        }
+        revealAndGo(btnLeft);
+      }
     }
 
     // ===== VÉLETLEN VÁLASZ-SZÖVEGEK: CSAK OLDALBETÖLTÉSKOR =====
@@ -489,11 +520,14 @@
       });
     });
 
-    // A/B kattintás: beír
+    // A/B kattintás: beír + mér
     document.querySelectorAll(".choice").forEach(el=>{
       el.addEventListener("click", ()=>{
         const q = Number(el.dataset.q);
         const v = el.dataset.v;
+
+        track(`q${q}_${v.toLowerCase()}`);
+
         document.getElementById(`q${q}`).value = v;
         update();
       });
@@ -501,6 +535,8 @@
 
     hideButtons();
     statusEl.textContent = "";
+
+    track("jesus_start");
 
     // ====== Tovább gombok: zene STOP + átirányítás ======
     function goWithStop(e){
@@ -549,5 +585,3 @@
   </script>
 </body>
 </html>
-
-
