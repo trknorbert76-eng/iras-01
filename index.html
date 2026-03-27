@@ -3,73 +3,80 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TN:Az írás</title>
+  <title>TN: Az írás</title>
+
   <style>
     :root{
       --bg:#ffffff;
       --text:#111;
       --muted:#666;
-      --line:#e6e6e6;
-
-      /* JOBB = zöld, BAL = lila */
+      --line:#e7e7e7;
       --right:#16a34a;
       --left:#6b2aa6;
     }
 
+    *{ box-sizing:border-box; }
+
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:var(--bg);
       color:var(--text);
     }
 
     .page{
-      max-width: 1200px;
-      margin: 24px auto;
-      padding: 0 16px;
+      max-width:1200px;
+      margin:24px auto;
+      padding:0 16px;
     }
 
     .layout{
       display:grid;
-      grid-template-columns: 1.25fr 0.9fr 1.1fr;
-      gap: 22px;
+      grid-template-columns:1.25fr 0.9fr 1.1fr;
+      gap:22px;
       align-items:start;
-    }
-
-    h1{
-      margin:0 0 10px 0;
-      font-size: 22px;
-      text-align:center;
     }
 
     .card{
       border:1px solid var(--line);
-      border-radius: 14px;
-      padding: 16px;
+      border-radius:14px;
+      padding:16px;
       background:#fff;
     }
 
+    h1{
+      margin:0 0 10px 0;
+      font-size:22px;
+      text-align:center;
+    }
+
     .qtitle{
-      font-size: 16px;
-      margin: 0 0 12px 0;
-      font-weight: 700;
+      font-size:16px;
+      margin:0 0 12px 0;
+      font-weight:700;
     }
 
     .q{
-      padding: 10px 0;
+      padding:12px 0;
       border-bottom:1px dashed #eee;
+      transition:opacity .25s ease;
     }
     .q:last-child{ border-bottom:none; }
 
+    .q.locked{
+      opacity:1;
+    }
+
     .qnum{
-      font-weight: 700;
-      margin-bottom: 6px;
+      font-weight:700;
+      margin-bottom:6px;
     }
 
     .qtext{
-      margin: 0 0 8px 0;
+      margin:0 0 10px 0;
       color:#222;
       line-height:1.35;
+      font-weight:600;
     }
 
     .choices{
@@ -86,110 +93,184 @@
       user-select:none;
       padding:8px 10px;
       border:1px solid var(--line);
-      border-radius: 10px;
-      transition: border-color .15s ease;
+      border-radius:10px;
+      transition:border-color .15s ease, transform .08s ease, background .15s ease;
+      background:#fff;
     }
-    .choice:hover{ border-color:#cfcfcf; }
+
+    .choice:hover{
+      border-color:#cfcfcf;
+      transform:translateY(-1px);
+    }
+
+    .choice:active{
+      transform:translateY(0);
+    }
 
     .badge{
-      min-width: 22px;
-      height: 22px;
+      min-width:22px;
+      height:22px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      border-radius: 999px;
+      border-radius:999px;
       border:1px solid var(--line);
       font-weight:700;
-      font-size: 12px;
-      line-height: 1;
+      font-size:12px;
+      line-height:1;
       margin-top:2px;
+      background:#fafafa;
     }
 
     .choice .label{
-      font-size: 14px;
-      line-height:1.25;
+      font-size:14px;
+      line-height:1.28;
       color:#111;
+    }
+
+    .selectedAnswer{
+      display:none;
+      margin-top:8px;
+      padding:10px 12px;
+      border:1px solid #dadada;
+      border-radius:10px;
+      background:#fcfcfc;
+      font-size:14px;
+      line-height:1.3;
+    }
+
+    .selectedAnswer.show{
+      display:block;
+    }
+
+    .selectedAnswer .selBadge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      border:1px solid #d8d8d8;
+      font-weight:700;
+      font-size:12px;
+      margin-right:8px;
+      vertical-align:middle;
+      background:#fff;
+    }
+
+    .jesus-line{
+      margin-top:10px;
+      font-size:13px;
+      color:#444;
+      font-style:italic;
+      line-height:1.45;
+      opacity:0;
+      transition:opacity 1.15s ease;
+    }
+
+    .jesus-line.show{
+      opacity:1;
     }
 
     .center p{
       margin:0 0 14px 0;
       text-align:center;
       color:var(--muted);
-      font-size: 13px;
+      font-size:13px;
     }
 
     .grid{ display:grid; gap:10px; }
+
     .row{
       display:grid;
-      grid-template-columns: 90px 1fr;
+      grid-template-columns:90px 1fr;
       align-items:center;
       gap:10px;
     }
-    label{ color:#222; font-size: 13px; }
+
+    label{
+      color:#222;
+      font-size:13px;
+    }
 
     input[type="text"]{
-      height: 42px;
-      border-radius: 10px;
+      height:42px;
+      border-radius:10px;
       border:1px solid #d9d9d9;
-      font-size: 16px;
+      font-size:16px;
       text-align:center;
       outline:none;
+      background:#fff;
     }
+
     input[type="text"]:focus{
       border-color:#999;
-      box-shadow: 0 0 0 3px rgba(0,0,0,.05);
+      box-shadow:0 0 0 3px rgba(0,0,0,.05);
     }
 
     .hint{
-      margin-top: 10px;
-      font-size: 12px;
+      margin-top:10px;
+      font-size:12px;
       color:var(--muted);
       text-align:center;
     }
 
     .btns{
-      margin-top: 14px;
+      margin-top:14px;
       display:flex;
       justify-content:center;
       gap:10px;
+      flex-wrap:wrap;
     }
 
     .button{
-      display:inline-block;
-      padding: 11px 16px;
-      border-radius: 12px;
+      display:none;
+      padding:11px 16px;
+      border-radius:12px;
       text-decoration:none;
       color:white;
-      font-weight: 700;
-      font-size: 14px;
-      box-shadow: 0 8px 18px rgba(0,0,0,.12);
-      transition: transform .08s ease, filter .12s ease;
+      font-weight:700;
+      font-size:14px;
+      box-shadow:0 8px 18px rgba(0,0,0,.12);
+      transition:transform .08s ease, filter .12s ease;
     }
-    .button:hover{ transform: translateY(-1px); filter: brightness(1.05); }
-    .button:active{ transform: translateY(0); filter: brightness(0.95); }
 
-    #goRight{ background: var(--right); }
-    #goLeft{ background: var(--left); }
-    #goRight, #goLeft{ display:none; }
+    .button:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.05);
+    }
+
+    .button:active{
+      transform:translateY(0);
+      filter:brightness(.95);
+    }
+
+    #goRight{ background:var(--right); }
+    #goLeft{ background:var(--left); }
 
     .status{
-      margin-top: 12px;
-      font-size: 14px;
+      margin-top:12px;
+      font-size:14px;
       text-align:center;
       color:var(--muted);
-      min-height: 22px;
+      min-height:22px;
     }
 
     .imgWrap{
       overflow:hidden;
-      border-radius: 14px;
+      border-radius:14px;
       border:1px solid var(--line);
       background:#fff;
     }
-    .imgWrap img{ width:100%; height:auto; display:block; }
 
-    @media (max-width: 980px){
-      .layout{ grid-template-columns: 1fr; }
+    .imgWrap img{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    @media (max-width:980px){
+      .layout{ grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -207,13 +288,16 @@
           <div class="qnum">1.</div>
           <p class="qtext">Ha igazságtalanság ér:</p>
           <div class="choices">
-            <div class="choice" data-q="1" data-v="A"><span class="badge">A</span>
-              <div class="label">Elkerülöm a veszteséget.</div>
+            <div class="choice" data-q="1" data-v="A">
+              <span class="badge">A</span>
+              <div class="label">Ideiglenes szöveg A</div>
             </div>
-            <div class="choice" data-q="1" data-v="B"><span class="badge">B</span>
-              <div class="label">Van veszteség, amit vállalni kell.</div>
+            <div class="choice" data-q="1" data-v="B">
+              <span class="badge">B</span>
+              <div class="label">Ideiglenes szöveg B</div>
             </div>
           </div>
+          <div class="selectedAnswer"></div>
         </div>
 
         <!-- 2 -->
@@ -221,69 +305,84 @@
           <div class="qnum">2.</div>
           <p class="qtext">Amikor valami nagyon fáj:</p>
           <div class="choices">
-            <div class="choice" data-q="2" data-v="A"><span class="badge">A</span>
-              <div class="label">Ha az igazság kemény, kimondom.</div>
+            <div class="choice" data-q="2" data-v="A">
+              <span class="badge">A</span>
+              <div class="label">Ideiglenes szöveg A</div>
             </div>
-            <div class="choice" data-q="2" data-v="B"><span class="badge">B</span>
-              <div class="label">Inkább békét keresek, még ha félreértenek is.</div>
+            <div class="choice" data-q="2" data-v="B">
+              <span class="badge">B</span>
+              <div class="label">Ideiglenes szöveg B</div>
             </div>
           </div>
+          <div class="selectedAnswer"></div>
         </div>
 
         <!-- 3 -->
         <div class="q" data-q="3">
           <div class="qnum">3.</div>
-          <p class="qtext">Ha valaki megbánt:</p>
+          <p class="qtext">Ha más szenved a közelemben:</p>
           <div class="choices">
-            <div class="choice" data-q="3" data-v="A"><span class="badge">A</span>
-              <div class="label">Nem szeretem, ha rám hárul.</div>
+            <div class="choice" data-q="3" data-v="A">
+              <span class="badge">A</span>
+              <div class="label">Ideiglenes szöveg A</div>
             </div>
-            <div class="choice" data-q="3" data-v="B"><span class="badge">B</span>
-              <div class="label">Néha akkor is vállalni kell, ha mások nem értik.</div>
+            <div class="choice" data-q="3" data-v="B">
+              <span class="badge">B</span>
+              <div class="label">Ideiglenes szöveg B</div>
             </div>
           </div>
+          <div class="selectedAnswer"></div>
         </div>
 
         <!-- 4 -->
         <div class="q" data-q="4">
           <div class="qnum">4.</div>
-          <p class="qtext">Ha hibázom:</p>
+          <p class="qtext">Ha úgy érzem, magamra maradtam:</p>
           <div class="choices">
-            <div class="choice" data-q="4" data-v="A"><span class="badge">A</span>
-              <div class="label">Az igazság az első.</div>
+            <div class="choice" data-q="4" data-v="A">
+              <span class="badge">A</span>
+              <div class="label">Ideiglenes szöveg A</div>
             </div>
-            <div class="choice" data-q="4" data-v="B"><span class="badge">B</span>
-              <div class="label">A túlélés az első.</div>
+            <div class="choice" data-q="4" data-v="B">
+              <span class="badge">B</span>
+              <div class="label">Ideiglenes szöveg B</div>
             </div>
           </div>
+          <div class="selectedAnswer"></div>
         </div>
 
         <!-- 5 -->
         <div class="q" data-q="5">
           <div class="qnum">5.</div>
-         <p class="qtext">Ha más szenved a közelemben:</p>
+          <p class="qtext">Ha valami nagyon hiányzik az életemből:</p>
           <div class="choices">
-            <div class="choice" data-q="5" data-v="A"><span class="badge">A</span>
-              <div class="label">Csendben maradok.</div>
+            <div class="choice" data-q="5" data-v="A">
+              <span class="badge">A</span>
+              <div class="label">Ideiglenes szöveg A</div>
             </div>
-            <div class="choice" data-q="5" data-v="B"><span class="badge">B</span>
-              <div class="label">Ha kell, megszólalok.</div>
+            <div class="choice" data-q="5" data-v="B">
+              <span class="badge">B</span>
+              <div class="label">Ideiglenes szöveg B</div>
             </div>
           </div>
+          <div class="selectedAnswer"></div>
         </div>
 
         <!-- 6 -->
         <div class="q" data-q="6">
           <div class="qnum">6.</div>
-          <p class="qtext">Ha nincs bizonyíték valamire:</p>
+          <p class="qtext">Ha egy nehéz út végére érek:</p>
           <div class="choices">
-            <div class="choice" data-q="6" data-v="A"><span class="badge">A</span>
-              <div class="label">A következmények.</div>
+            <div class="choice" data-q="6" data-v="A">
+              <span class="badge">A</span>
+              <div class="label">Ideiglenes szöveg A</div>
             </div>
-            <div class="choice" data-q="6" data-v="B"><span class="badge">B</span>
-              <div class="label">A döntés tisztasága.</div>
+            <div class="choice" data-q="6" data-v="B">
+              <span class="badge">B</span>
+              <div class="label">Ideiglenes szöveg B</div>
             </div>
           </div>
+          <div class="selectedAnswer"></div>
         </div>
 
         <!-- 7 -->
@@ -291,20 +390,23 @@
           <div class="qnum">7.</div>
           <p class="qtext">Ha az életem végére gondolok:</p>
           <div class="choices">
-            <div class="choice" data-q="7" data-v="A"><span class="badge">A</span>
-              <div class="label">A fájdalomnak is lehet beteljesítő szerepe.</div>
+            <div class="choice" data-q="7" data-v="A">
+              <span class="badge">A</span>
+              <div class="label">Ideiglenes szöveg A</div>
             </div>
-            <div class="choice" data-q="7" data-v="B"><span class="badge">B</span>
-              <div class="label">A fájdalomnak nincs értelme.</div>
+            <div class="choice" data-q="7" data-v="B">
+              <span class="badge">B</span>
+              <div class="label">Ideiglenes szöveg B</div>
             </div>
           </div>
+          <div class="selectedAnswer"></div>
         </div>
       </div>
 
-      <!-- KÖZÉP: BEÍRÓS RÉSZ -->
+      <!-- KÖZÉP -->
       <div class="card center">
         <h1>Folytatáshoz</h1>
-        <p>Írd be a 7 válaszod betűjét. Csak <b>A</b> vagy <b>B</b>. (Példa: AABBAAB)</p>
+        <p>Írd be a 7 válaszod betűjét. Csak <b>A</b> vagy <b>B</b>. Példa: <b>AABBAAB</b></p>
 
         <div class="grid" id="inputs">
           <div class="row"><label>1. válasz</label><input id="q1" type="text" inputmode="latin" maxlength="1" autocomplete="off"></div>
@@ -316,11 +418,11 @@
           <div class="row"><label>7. válasz</label><input id="q7" type="text" inputmode="latin" maxlength="1" autocomplete="off"></div>
         </div>
 
-        <div class="hint">Tipp: nagybetű-kisbetű mindegy, a rendszer nagybetűsíti.</div>
+        <div class="hint">A rendszer nagybetűsíti a beírt választ.</div>
 
         <div class="btns">
-          <a id="goRight" class="button" href="https://trknorbert76-eng.github.io/befejezes01/" target="_blank" rel="noopener">Tovább</a>
-          <a id="goLeft"  class="button" href="https://trknorbert76-eng.github.io/befejezes02/"  target="_blank" rel="noopener">Tovább</a>
+          <a id="goRight" class="button" href="https://trknorbert76-eng.github.io/befejezes01/" rel="noopener">Tovább</a>
+          <a id="goLeft" class="button" href="https://trknorbert76-eng.github.io/befejezes02/" rel="noopener">Tovább</a>
         </div>
 
         <div class="status" id="status"></div>
@@ -333,6 +435,10 @@
 
     </div>
   </div>
+
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     const SUPABASE_URL = "https://hhysuxfwdjwlxtmlxnrv.supabase.co";
@@ -353,15 +459,77 @@
       }catch(e){}
     }
 
-    // ====== LOGIKA ======
+    const jesusWords = {
+      1: "„Atyám, bocsáss meg nekik, mert nem tudják, mit cselekszenek.” (Lk 23,34)",
+      2: "„Bizony mondom neked: még ma velem leszel a paradicsomban.” (Lk 23,43)",
+      3: "„Íme, a te anyád.” (Jn 19,27)",
+      4: "„Én Istenem, én Istenem, miért hagytál el engem?” (Mt 27,46)",
+      5: "„Szomjazom.” (Jn 19,28)",
+      6: "„Beteljesedett.” (Jn 19,30)",
+      7: "„Atyám, kezedbe ajánlom lelkemet.” (Lk 23,46)"
+    };
+
+    // Nem szimmetrikus, ezért nehezebben kijátszható
+    // 6. kérdés csak döntetlennél dönt
     const weights = {
-      1: { A:{L:0,R:2}, B:{L:2,R:0} }, // erős
-      2: { A:{L:1,R:0}, B:{L:0,R:1} },
-      3: { A:{L:0,R:1}, B:{L:1,R:0} },
-      4: { A:{L:2,R:0}, B:{L:0,R:2} }, // erős
-      5: { A:{L:0,R:1}, B:{L:1,R:0} },
-      6: { A:{L:0,R:0}, B:{L:0,R:0} }, // tiebreak only
-      7: { A:{L:2,R:0}, B:{L:0,R:2} }, // erős
+      1: { A:{L:0,R:2}, B:{L:2,R:0} },
+      2: { A:{L:1,R:0}, B:{L:0,R:2} },
+      3: { A:{L:0,R:2}, B:{L:1,R:0} },
+      4: { A:{L:2,R:0}, B:{L:0,R:1} },
+      5: { A:{L:0,R:1}, B:{L:2,R:0} },
+      6: { A:{L:0,R:0}, B:{L:0,R:0} },
+      7: { A:{L:1,R:0}, B:{L:0,R:2} }
+    };
+
+    const answerVariants = {
+      1: [
+        { A:"Inkább elengedem, mint hogy sokáig magamban őrizzem.", B:"Előbb meg akarom érteni, mi történt valójában." },
+        { A:"Nem akarom magammal vinni a sérelmet.", B:"Fontosabb, hogy tisztán lássam az okát." },
+        { A:"Jobb elengedni, mint belül újra és újra visszatérni rá.", B:"Először tudni akarom, mi volt benne az igazság." },
+        { A:"A békém fontosabb, mint hogy sokáig hordozzam.", B:"Nehezen engedem el, amíg nem értem, miért történt." }
+      ],
+
+      2: [
+        { A:"Ilyenkor nehezen látok benne bármi értelmet.", B:"Keresem benne, maradhat-e még valami remény." },
+        { A:"A fájdalom ilyenkor mindent elhomályosít.", B:"Próbálom nem elveszíteni benne a reményt." },
+        { A:"Először csak a súlyát érzem, nem a célját.", B:"Hiszem, hogy a legsötétebb helyzetben is maradhat fény." },
+        { A:"Nehéz ilyenkor többet látni magán a szenvedésen túl.", B:"Azt keresem, mi menthető meg belőle belül." }
+      ],
+
+      3: [
+        { A:"Mellette maradok, még ha nehéz is.", B:"Segítek, de próbálok valamennyire távol maradni." },
+        { A:"Nem szívesen hagyok magára valakit a szenvedésében.", B:"Támogatom, de óvom magam a teljes belemerüléstől." },
+        { A:"A jelenlét néha fontosabb, mint a jó szavak.", B:"Segíteni akarok, de határt is kell tartanom." },
+        { A:"Ha kell, csendben is ott maradok mellette.", B:"Nem fordulok el, de nem tudok teljesen bevonódni." }
+      ],
+
+      4: [
+        { A:"Inkább csendben viselem, amit kell.", B:"Akkor is keresem, van-e még kapaszkodó." },
+        { A:"Először befelé fordulok, és magamban hordozom.", B:"Próbálok hinni benne, hogy még sincs minden elveszve." },
+        { A:"Nehezen kérek ilyenkor bárkitől bármit.", B:"Valamit mindig keresek, amibe bele lehet kapaszkodni." },
+        { A:"A magányt inkább lenyelem, mint kimondom.", B:"A sötétben is keresem, maradt-e még valami fény." }
+      ],
+
+      5: [
+        { A:"Megtanulok együtt élni a hiányával.", B:"Nehezen engedem el belül." },
+        { A:"Ami nincs, annak a helyét is meg lehet tanulni hordozni.", B:"A hiány sokáig bennem marad." },
+        { A:"Próbálok békét kötni azzal, ami nincs.", B:"Nem tudom könnyen elengedni azt, ami hiányzik." },
+        { A:"Idővel együtt lehet élni az üres hellyel is.", B:"Vannak hiányok, amiket belül újra és újra érzek." }
+      ],
+
+      6: [
+        { A:"Fontos, hogy végigvigyem, ami rám tartozott.", B:"Inkább azt nézem, mit lehet békében lezárni." },
+        { A:"Amit elvállaltam, azt szeretem végigvinni.", B:"A lezárás számomra néha fontosabb, mint a teljes küzdelem." },
+        { A:"Nehéz út végén is számít, hogy végére érjek.", B:"Azt keresem, hogyan lehet ezt nyugalomban letenni." },
+        { A:"A befejezettség érzése fontos nekem.", B:"Néha a csendes lezárás többet ér, mint az erőltetett befejezés." }
+      ],
+
+      7: [
+        { A:"Jó lenne, ha annak is lenne értelme, ami fájt.", B:"Azt remélem, hogy van, akire mindezt rábízhatom." },
+        { A:"A végén szeretném látni, hogy nem volt hiába semmi.", B:"A végén jó lenne teljesen átengedni mindent." },
+        { A:"Remélem, egyszer összeáll a fájdalmak értelme is.", B:"Azt remélem, hogy a végén már nem nekem kell tartanom mindent." },
+        { A:"Jó lenne tudni, hogy a szenvedés is beépült valamibe.", B:"A végén szeretném letenni valaki kezébe az egészet." }
+      ]
     };
 
     const inputs = Array.from({length:7}, (_,i)=>document.getElementById(`q${i+1}`));
@@ -397,16 +565,16 @@
         R += w.R;
       }
 
-      if(L > R) return { side: "LEFT" };
-      if(R > L) return { side: "RIGHT" };
+      if(L > R) return { side:"LEFT", L, R };
+      if(R > L) return { side:"RIGHT", L, R };
 
-      // döntetlen: 6-os dönt (B -> LEFT)
-      return { side: (answers[6] === "B") ? "LEFT" : "RIGHT" };
+      // döntetlen: 6-os dönt
+      return { side:(answers[6] === "B") ? "LEFT" : "RIGHT", L, R };
     }
 
     function revealAndGo(btn){
       btn.style.display = "inline-block";
-      btn.scrollIntoView({ behavior: "smooth", block: "center" });
+      btn.scrollIntoView({ behavior:"smooth", block:"center" });
       setTimeout(() => btn.focus(), 150);
     }
 
@@ -427,6 +595,7 @@
       statusEl.textContent = "";
 
       const res = scoreSide();
+
       if(res.side === "RIGHT"){
         if(lastTrackedResult !== "RIGHT"){
           track("result_right");
@@ -442,119 +611,83 @@
       }
     }
 
-    // ===== VÉLETLEN VÁLASZ-SZÖVEGEK: CSAK OLDALBETÖLTÉSKOR =====
-    const answerVariants = {
-
-  1: [
-    { A:"Inkább azt nézem, hogyan tudok továbblépni.", B:"Először meg akarom érteni, mi történt pontosan." },
-    { A:"Nem mindig keresem az igazságot, inkább a kiutat.", B:"Fontos nekem, hogy kiderüljön az igazság." },
-    { A:"Azt figyelem, mi segít most a legtöbbet.", B:"Inkább tisztázni akarom a helyzetet, mielőtt reagálok." },
-    { A:"Inkább a megoldást keresem, mint a magyarázatot.", B:"Először rendet teszek fejben: mi volt igaz és mi nem." }
-  ],
-
-  2: [
-    { A:"Meg akarom érteni, miért történik velem.", B:"Inkább túl akarok jutni rajta, és menni tovább." },
-    { A:"Keresem az okát, még ha nehéz is szembenézni vele.", B:"Nem keresek mindig magyarázatot, csak elengedem." },
-    { A:"A fájdalomban is próbálom meglátni az értelmét.", B:"Azt nézem, hogyan lehet minél hamarabb mögöttem." },
-    { A:"Addig gondolkodom rajta, amíg valami tanulságot nem találok benne.", B:"Nem akarom elemezni, inkább lezárom magamban." }
-  ],
-
-  3: [
-    { A:"Inkább elengedem, hogy ne maradjon bennem.", B:"Nem felejtem el könnyen, mert tanulni akarok belőle." },
-    { A:"Nem akarom sokáig cipelni magamban.", B:"Sokáig gondolkodom rajta, mi történt valójában." },
-    { A:"Jobbnak érzem lezárni és továbblépni.", B:"Inkább megérteni próbálom, mint gyorsan elfelejteni." },
-    { A:"Nem ragadok bele, inkább hagyom elmúlni.", B:"Az ilyen dolgokat nehezen engedem el." }
-  ],
-
-  4: [
-    { A:"Megállok, és végiggondolom, hol csúszott el.", B:"Kijavítom, és megyek tovább." },
-    { A:"Fontos, hogy megértsem, miért történt.", B:"Nem időzöm rajta túl sokáig." },
-    { A:"Inkább tanulni próbálok belőle.", B:"Inkább lezárom, és a következő lépésre figyelek." },
-    { A:"Meg akarom látni benne a tanulságot.", B:"Rendezem, ami lehet, aztán továbblépek." }
-  ],
-
-  5: [
-    { A:"Segítek, de közben figyelek a saját határaimra is.", B:"Nehéz távol maradnom, mélyen megérint." },
-    { A:"Támogatom, de nem akarok teljesen belemerülni.", B:"Könnyen bevonódom érzelmileg." },
-    { A:"Fontos segíteni, de nem minden terhet tudok átvenni.", B:"Ha valaki szenved, azt én is erősen érzem." },
-    { A:"Próbálok jelen lenni, de megőrizni magam.", B:"Szinte magammal viszem a fájdalmát." }
-  ],
-
-  6: [
-    { A:"Addig nem állítok semmit biztosra.", B:"El tudom fogadni, hogy nem minden bizonyítható." },
-    { A:"Fontos számomra, hogy legyen bizonyíték.", B:"Vannak dolgok, amiket nem lehet mérni." },
-    { A:"Inkább kivárok, amíg tisztábban látok.", B:"Néha elég az, amit belül érzek igaznak." },
-    { A:"Nem szeretek feltételezésekre építeni.", B:"Nem minden igazság fér bele bizonyítékokba." }
-  ],
-
-  7: [
-    { A:"Azt szeretném, hogy legyen értelme annak, ami történt.", B:"Azt szeretném, hogy békében le tudjam zárni." },
-    { A:"Jó lenne látni az életem egészének jelentését.", B:"Inkább a nyugalom fontos számomra." },
-    { A:"Fontos lenne, hogy összeálljon a kép.", B:"Azt kívánnám, hogy csendben el tudjam engedni." },
-    { A:"Azt remélem, hogy minden valamiért történt.", B:"Jó lenne megbékélve lezárni mindent." }
-  ]
-
-};
-
     function applyRandomAnswerTextsOnce(){
-      for(let q = 1; q <= 7; q++){
+      for(let q=1; q<=7; q++){
         const list = answerVariants[q];
         if(!list || !list.length) continue;
 
         const pick = list[Math.floor(Math.random() * list.length)];
-
         const a = document.querySelector(`.choice[data-q="${q}"][data-v="A"] .label`);
         const b = document.querySelector(`.choice[data-q="${q}"][data-v="B"] .label`);
+
         if(a) a.textContent = pick.A;
         if(b) b.textContent = pick.B;
       }
     }
 
+    function lockQuestion(q, chosenValue){
+      const block = document.querySelector(`.q[data-q="${q}"]`);
+      if(!block) return;
+
+      const choices = block.querySelector(".choices");
+      const chosenLabelEl = block.querySelector(`.choice[data-v="${chosenValue}"] .label`);
+      const selectedBox = block.querySelector(".selectedAnswer");
+      let line = block.querySelector(".jesus-line");
+
+      block.classList.add("locked");
+
+      if(choices) choices.style.display = "none";
+
+      if(selectedBox && chosenLabelEl){
+        selectedBox.innerHTML = `<span class="selBadge">${chosenValue}</span>${chosenLabelEl.textContent}`;
+        selectedBox.classList.add("show");
+      }
+
+      if(!line){
+        line = document.createElement("div");
+        line.className = "jesus-line";
+        block.appendChild(line);
+      }
+
+      line.textContent = jesusWords[q] || "";
+
+      setTimeout(() => {
+        line.classList.add("show");
+      }, 50);
+    }
+
     applyRandomAnswerTextsOnce();
 
-    // Gépelés
-    inputs.forEach((inp) => {
+    inputs.forEach((inp, index) => {
       inp.addEventListener("input", () => {
         inp.value = sanitizeChar(inp.value);
         update();
       });
+
+      inp.addEventListener("keydown", (e) => {
+        if((e.key === "Backspace" || e.key === "Delete") && !inp.value && index > 0){
+          inputs[index - 1].focus();
+        }
+      });
     });
 
-    // A/B kattintás: beír + mér
-    document.querySelectorAll(".choice").forEach(el=>{
-      el.addEventListener("click", ()=>{
+    document.querySelectorAll(".choice").forEach(el => {
+      el.addEventListener("click", () => {
         const q = Number(el.dataset.q);
         const v = el.dataset.v;
 
         track(`q${q}_${v.toLowerCase()}`);
 
         document.getElementById(`q${q}`).value = v;
+        lockQuestion(q, v);
         update();
       });
     });
 
+    track("jesus_start");
     hideButtons();
     statusEl.textContent = "";
 
-    track("jesus_start");
-
-    // ====== Tovább gombok: zene STOP + átirányítás ======
-    function goWithStop(e){
-      e.preventDefault();
-      stopMusic();
-      const url = e.currentTarget.href;
-      window.location.href = url;
-    }
-
-    btnRight.addEventListener("click", goWithStop);
-    btnLeft.addEventListener("click", goWithStop);
-  </script>
-
-  <audio id="bgMusic" loop>
-    <source src="music.mp3" type="audio/mpeg">
-  </audio>
-
-  <script>
     const music = document.getElementById("bgMusic");
     let started = false;
 
@@ -566,8 +699,13 @@
 
       let v = 0;
       const fade = setInterval(() => {
-        if (v >= 0.10) clearInterval(fade);
-        else { v += 0.01; music.volume = v; }
+        if (v >= 0.10) {
+          music.volume = 0.10;
+          clearInterval(fade);
+        } else {
+          v += 0.01;
+          music.volume = v;
+        }
       }, 120);
 
       started = true;
@@ -580,8 +718,18 @@
       }catch(e){}
     }
 
-    window.addEventListener("click", startMusic, { once: true });
-    window.addEventListener("touchstart", startMusic, { once: true });
+    function goWithStop(e){
+      e.preventDefault();
+      stopMusic();
+      const url = e.currentTarget.href;
+      window.location.href = url;
+    }
+
+    btnRight.addEventListener("click", goWithStop);
+    btnLeft.addEventListener("click", goWithStop);
+
+    window.addEventListener("click", startMusic, { once:true });
+    window.addEventListener("touchstart", startMusic, { once:true });
   </script>
 </body>
 </html>
