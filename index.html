@@ -524,14 +524,24 @@
         { A:"A befejezettség érzése fontos nekem.", B:"Néha a csendes lezárás többet ér, mint az erőltetett befejezés." }
       ],
 
-      7: [
-        { A:"Jó lenne, ha annak is lenne értelme, ami fájt.", B:"Azt remélem, hogy van, akire mindezt rábízhatom." },
-        { A:"A végén szeretném látni, hogy nem volt hiába semmi.", B:"A végén jó lenne teljesen átengedni mindent." },
-        { A:"Remélem, egyszer összeáll a fájdalmak értelme is.", B:"Azt remélem, hogy a végén már nem nekem kell tartanom mindent." },
-        { A:"Jó lenne tudni, hogy a szenvedés is beépült valamibe.", B:"A végén szeretném letenni valaki kezébe az egészet." }
-      ]
-    };
-
+     7: [
+  { 
+    A:"Jó lenne csendben letenni mindazt, amit egész életemben vittem.", 
+    B:"Jó lenne látni, hogy volt értelme annak, amin végigmentem." 
+  },
+  { 
+    A:"A végén már nem akarok semmit tovább hordozni magamban.", 
+    B:"A végén szeretném megérteni, hogyan áll össze az egész életem." 
+  },
+  { 
+    A:"Jó lenne úgy megérkezni, hogy már nincs bennem teher.", 
+    B:"Jó lenne érezni, hogy minden a helyére került bennem." 
+  },
+  { 
+    A:"Azt remélem, hogy a végén minden lassan elcsendesedik bennem.", 
+    B:"Azt remélem, hogy a végén nem marad bennem befejezetlenség." 
+  }
+]
     const inputs = Array.from({length:7}, (_,i)=>document.getElementById(`q${i+1}`));
     const statusEl = document.getElementById("status");
     const btnRight = document.getElementById("goRight");
